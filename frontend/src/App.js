@@ -135,6 +135,7 @@ function App() {
                     <p>User: {assignment.userId.username}</p>
                     <p>Task: {assignment.task}</p>
                     <p>Status: {assignment.status}</p>
+                    <p>Submitted: {new Date(assignment.createdAt).toLocaleString()}</p>
                     {assignment.status === 'pending' && (
                       <div>
                         <button onClick={() => handleAssignmentAction(assignment._id, 'accept')}>Accept</button>

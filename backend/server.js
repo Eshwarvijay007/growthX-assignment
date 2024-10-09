@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const Assignment = require('./models/Assignment');
+const User = require('./models/User'); // Assuming you have a User model
 const cors = require('cors');
-const Assignment = require('./models/Assignment'); // Adjust the path as needed
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { connectDB } = require('./config/database');
@@ -17,9 +18,41 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api/admin', adminRoutes);
+// Get all assignments for an admin
+app.get('/admin/assignments/:adminId', async (req, res) => {
+  try {
+    const assignments = await Assignment.find({ admin: req.params.adminId })
+      .populate('user', 'name') // Populate user details
+      .sort('-createdAt');
+    res.json(assignments);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update assignment status (accept or reject)
+app.patch('/admin/assignments/:assignmentId', async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['accepted', 'rejected'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+    
+    const assignment = await Assignment.findByIdAndUpdate(
+      req.params.assignmentId,
+      { status },
+      { new: true }
+    );
+    
+    if (!assignment) {
+      return res.status(404).json({ message: 'Assignment not found' });
+    }
+    
+    res.json(assignment);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 // Route for creating an assignment
 app.post('/assignments', async (req, res) => {
@@ -38,5 +71,8 @@ app.post('/assignments', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
+app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

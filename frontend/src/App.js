@@ -35,6 +35,17 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    setUser(null);
+    setUsername('');
+    setPassword('');
+    setIsAdmin(false);
+    setTask('');
+    setAdminUsername('');
+    setAssignments([]);
+    setSelectedAdmin('');
+  };
+
   const handleUpload = async (e) => {
     e.preventDefault();
     try {
@@ -95,6 +106,24 @@ function App() {
 
   return (
     <div className="App">
+       {user && (
+        <button 
+          onClick={handleLogout} 
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            padding: '10px 20px',
+            backgroundColor: '#f44336',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer'
+          }}
+        >
+          Logout
+        </button>
+      )}
       <h1>Assignment Submission Portal</h1>
       {!user ? (
         <div>

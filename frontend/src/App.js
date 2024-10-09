@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
@@ -10,6 +10,8 @@ function App() {
   const [task, setTask] = useState('');
   const [adminUsername, setAdminUsername] = useState('');
   const [assignments, setAssignments] = useState([]);
+  const [admins, setAdmins] = useState([]);
+  const [selectedAdmin, setSelectedAdmin] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,15 +38,19 @@ function App() {
   const handleUpload = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/users/upload', 
-        { task, admin: adminUsername },
-        { headers: { 'x-auth-token': user.token } }
+      //await axios.post('http://localhost:5000/api/users/upload', 
+       await axios.post('http://localhost:5000/assignments', 
+        { task, adminId: selectedAdmin },
+        { headers: { 
+          'x-auth-token': user.token,
+          'Content-Type': 'application/json'
+        }  }
       );
       alert('Assignment uploaded successfully');
       setTask('');
       setAdminUsername('');
     } catch (err) {
-      alert('Upload failed');
+      alert('Upload failed' + err.response.data.message);
     }
   };
 
@@ -68,6 +74,22 @@ function App() {
       handleFetchAssignments();
     } catch (err) {
       alert(`Failed to ${action} assignment`);
+    }
+  };
+
+  //to fetch the list of admins in DB
+  useEffect(() => {
+    if (user && !user.isAdmin) {
+      fetchAdmins();
+    }
+  }, [user]);
+
+  const fetchAdmins = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/admins');
+      setAdmins(res.data);
+    } catch (err) {
+      console.error('Failed to fetch admins:', err);
     }
   };
 
@@ -109,20 +131,26 @@ function App() {
             <>
               <h3>Upload Assignment</h3>
               <form onSubmit={handleUpload}>
-                <input 
-                  type="text" 
-                  placeholder="Task" 
-                  value={task} 
-                  onChange={(e) => setTask(e.target.value)} 
-                />
-                <input 
-                  type="text" 
-                  placeholder="Admin Username" 
-                  value={adminUsername} 
-                  onChange={(e) => setAdminUsername(e.target.value)} 
-                />
-                <button type="submit">Upload</button>
-              </form>
+            <input 
+              type="text" 
+              placeholder="Task" 
+              value={task} 
+              onChange={(e) => setTask(e.target.value)} 
+            />
+            <select 
+              value={selectedAdmin} 
+              onChange={(e) => setSelectedAdmin(e.target.value)}
+              required
+            >
+              <option value="">Select an admin</option>
+              {admins.map((admin) => (
+                <option key={admin._id} value={admin._id}>
+                  {admin.username}
+                </option>
+              ))}
+            </select>
+            <button type="submit">Upload</button>
+          </form>
             </>
           )}
           {user.isAdmin && (

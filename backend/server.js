@@ -6,7 +6,9 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { connectDB } = require('./config/database');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+const auth = require('./middleware/Auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,6 +31,38 @@ app.get('/admin/assignments/:adminId', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// Get all admin users
+app.get('/api/admins', async (req, res) => {
+    try {
+      const admins = await User.find({ isAdmin: true }).select('username _id');
+      res.json(admins);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Route for creating an assignment
+app.post('/assignments', auth, async (req, res) => {
+    try {
+      const { task, adminId } = req.body;
+      const userId = req.user.id; // Assuming you have authentication middleware
+  
+      const newAssignment = new Assignment({
+        task,
+        userId: userId,
+        admin: adminId,
+        status: 'pending'
+      });
+  
+      await newAssignment.save();
+      res.status(201).json(newAssignment);
+    } catch (error) {
+      console.error('Assignment creation error:', error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
 
 // Update assignment status (accept or reject)
 app.patch('/admin/assignments/:assignmentId', async (req, res) => {

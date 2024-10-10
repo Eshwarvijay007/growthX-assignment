@@ -67,13 +67,19 @@ The backend will be available at `http://localhost:5000`.
 
    The frontend will be available at `http://localhost:5000`.
 
-   navigate to the root directory and paste this: `npm install concurrently --save-dev`.
-   package.json add this script: 
-  `"scripts": {
+   navigate to the root directory and paste this: 
+   ```bash
+   npm install concurrently --save-dev
+   ```
+
+   - for the package.json add this script: 
+  ```
+"scripts": {
   "start": "concurrently \"npm run server\" \"npm run client\"",
   "server": "nodemon backend/server.js --watch backend",
-  "client": "npm start --prefix frontend"`
-}
+  "client": "npm start --prefix frontend"
+  ```
+
 
 
 

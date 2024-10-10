@@ -14,3 +14,7 @@ const auth = (req, res, next) => {
 };
 
 module.exports = auth;
+
+// This middleware function checks for a JWT token in the request header. If the token is present, it is verified using the 'your_jwt_secret' key.
+// If the token is valid, the user's ID is extracted from the token and set on the request object as req.user.id.
+// If the token is not present or not valid, a 401 status code is returned with a message indicating the issue.

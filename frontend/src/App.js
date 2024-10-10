@@ -3,6 +3,7 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
+  // State variables 
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,29 +14,37 @@ function App() {
   const [admins, setAdmins] = useState([]);
   const [selectedAdmin, setSelectedAdmin] = useState('');
 
+  // Function to handle login
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevents the default form submission 
     try {
       const endpoint = isAdmin ? '/api/admin/login' : '/api/users/login';
+      // Makes a POST request
       const res = await axios.post(`http://localhost:5000${endpoint}`, { username, password });
+      // Sets the user state with the response data
       setUser({ username, token: res.data.token, isAdmin });
     } catch (err) {
-      alert('Login failed');
+      alert('Login failed'); 
     }
   };
 
+  // Function to handle registration
   const handleRegister = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     try {
       const endpoint = isAdmin ? '/api/admin/register' : '/api/users/register';
+      // Makes a POST request 
       const res = await axios.post(`http://localhost:5000${endpoint}`, { username, password });
+      // Sets the user state with the response data
       setUser({ username, token: res.data.token, isAdmin });
     } catch (err) {
-      alert('Registration failed');
+      alert('Registration failed'); 
     }
   };
 
+  // Function to handle logout
   const handleLogout = () => {
+    // when logout button is clicked all the session data willbe set to null
     setUser(null);
     setUsername('');
     setPassword('');
@@ -46,18 +55,20 @@ function App() {
     setSelectedAdmin('');
   };
 
+  // Function to handle assignment upload
   const handleUpload = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     try {
-      //await axios.post('http://localhost:5000/api/users/upload', 
-       await axios.post('http://localhost:5000/assignments', 
+      // Makes a POST request to the assignments endpoint with task and adminId
+      await axios.post('http://localhost:5000/assignments', 
         { task, adminId: selectedAdmin },
         { headers: { 
-          'x-auth-token': user.token,
+          'x-auth-token': user.token, // Includes the user's token in the request headers
           'Content-Type': 'application/json'
         }  }
       );
-      alert('Assignment uploaded successfully');
+      alert('Assignment uploaded successfully'); 
+      // Resets task and adminUsername state variables
       setTask('');
       setAdminUsername('');
     } catch (err) {
@@ -65,48 +76,59 @@ function App() {
     }
   };
 
+  // Function to fetch assignments
   const handleFetchAssignments = async () => {
     try {
+      // Makes a GET request to the assignments endpoint
       const res = await axios.get('http://localhost:5000/api/admin/assignments', 
-        { headers: { 'x-auth-token': user.token } }
+        { headers: { 'x-auth-token': user.token } } // Includes the user's token in the request headers
       );
+      // Sets the assignments state with the response data
       setAssignments(res.data);
     } catch (err) {
-      alert('Failed to fetch assignments');
+      alert('Failed to fetch assignments'); 
     }
   };
 
+  // Function to handle assignment actions (accept or reject)
   const handleAssignmentAction = async (id, action) => {
     try {
+      // Makes a POST request to the assignment action endpoint with the assignment ID and action
       await axios.post(`http://localhost:5000/api/admin/assignments/${id}/${action}`, 
         {},
-        { headers: { 'x-auth-token': user.token } }
+        { headers: { 'x-auth-token': user.token } } // Includes the user's token in the request headers
       );
+      // update the assignments state
       handleFetchAssignments();
     } catch (err) {
-      alert(`Failed to ${action} assignment`);
+      alert(`Failed to ${action} assignment`); 
     }
   };
 
-  //to fetch the list of admins in DB
+  // Effect to fetch admins if the user is not an admin
   useEffect(() => {
     if (user && !user.isAdmin) {
-      fetchAdmins();
+      fetchAdmins(); // Calls the fetchAdmins function
     }
   }, [user]);
 
+  // Function to fetch admins
   const fetchAdmins = async () => {
     try {
+      // Makes a GET request to the admins endpoint
       const res = await axios.get('http://localhost:5000/api/admins');
+      // Sets the admins state with the response data
       setAdmins(res.data);
     } catch (err) {
-      console.error('Failed to fetch admins:', err);
+      console.error('Failed to fetch admins:', err); 
     }
   };
 
+  // JSX for the App component
   return (
     <div className="App">
        {user && (
+        //logout button with css
         <button 
           onClick={handleLogout} 
           style={{

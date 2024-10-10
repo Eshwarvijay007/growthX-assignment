@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+ mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
@@ -14,3 +14,10 @@ const connectDB = async () => {
 };
 
 module.exports = { connectDB };
+
+
+// This code snippet is a module that connects to a MongoDB database using Mongoose.
+// It exports a function called connectDB that is an asynchronous function.
+// The function uses the MONGODB_URI environment variable to connect to the database.
+// If the connection is successful, it logs a message to the console.
+// If there is an error, it logs the error and exits the process.

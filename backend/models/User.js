@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
+  
 });
 
 userSchema.pre('save', async function (next) {
@@ -15,3 +16,6 @@ userSchema.pre('save', async function (next) {
 });
 
 module.exports = mongoose.model('User', userSchema);
+
+//this snippet defines a mongoose model for user(common user ,Admin),including a pre save hook to hash the user's password
+//using bcrypt.

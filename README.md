@@ -9,6 +9,7 @@ it contains the mongouri
 - **Database**: MongoDB
   
 ## Project Structure
+![structure](structure.png)
 
 
 ## Installation

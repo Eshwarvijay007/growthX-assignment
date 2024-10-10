@@ -7,6 +7,9 @@ it contains the mongouri
 - **Backend**: Node.js, Express, MongoDB
 - **Frontend**: React, Axios
 - **Database**: MongoDB
+  
+## Project Structure
+GROWTHX ├── backend │ ├── config │ │ └── database.js │ ├── middleware │ │ └── Auth.js │ ├── models │ │ ├── Assignment.js │ │ └── User.js │ ├── node_modules │ ├── routes │ │ ├── adminRoutes.js │ │ └── userRoutes.js │ ├── .env │ ├── nodemon.json │ ├── package-lock.json │ ├── package.json │ └── server.js ├── frontend │ ├── node_modules │ ├── package-lock.json │ └── package.json
 
 ## Installation
 

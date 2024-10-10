@@ -1,4 +1,4 @@
-##NOTE:
+## NOTE:
 .env file is not added to gitignore for ease of the demonstration process
 it contains the mongouri
 

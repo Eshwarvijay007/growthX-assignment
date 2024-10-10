@@ -85,7 +85,11 @@ The backend will be available at `http://localhost:5000`.
 
 ## Usage
 
-1. In the root directory start server by: npm start
+1. In the root directory start server by:
+ ```bash
+  npm start
+```
+
 2. Register as a user or admin.
 3. Log in to the application.
 4. Users can upload assignments, and admins can manage them.
